@@ -33,15 +33,18 @@ namespace KLEUR
 
             // Next, we need to process the normal (directionFromCenter).
             var blend = data.directionFromCenter;
-            scalar = 1.0 / (blend.x + blend.y + blend.z);
-            blend.x = Math.Pow(Math.Abs(blend.x), smoothness) * scalar;
-            blend.y = Math.Pow(Math.Abs(blend.y), smoothness) * scalar;
-            blend.z = Math.Pow(Math.Abs(blend.z), smoothness) * scalar;
+            blend.x = Math.Pow(Math.Abs(blend.x), smoothness);
+            blend.y = Math.Pow(Math.Abs(blend.y), smoothness);
+            blend.z = Math.Pow(Math.Abs(blend.z), smoothness);
+            blend /= (blend.x + blend.y + blend.z);
 
             double height = (blend.x * x) + (blend.y * y) + (blend.z * z);
+
             if (scaleByRadius)
+            {
                 height *= sphere.radius;
-            
+            }
+
             data.vertHeight += deformity * height;
         }
     }
