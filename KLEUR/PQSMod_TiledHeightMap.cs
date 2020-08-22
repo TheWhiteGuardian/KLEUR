@@ -3,6 +3,10 @@ using System;
 using Kopernicus;
 using Kopernicus.Configuration;
 using Kopernicus.Configuration.ModLoader;
+using Kopernicus.ConfigParser.Attributes;
+using Kopernicus.ConfigParser.Enumerations;
+using Kopernicus.ConfigParser.BuiltinTypeParsers;
+using Kopernicus.Configuration.Parsing;
 
 namespace KLEUR
 {
@@ -13,6 +17,7 @@ namespace KLEUR
         public float smoothness = 1.0f;
         public float deformationBalance = 1.0f;
         public float deformity = 1.0f;
+        public bool scaleByRadius = false;
         
         public override void OnVertexBuildHeight(PQS.VertexBuildData data)
         {
@@ -36,8 +41,56 @@ namespace KLEUR
             blend.z = Math.Pow(Math.Abs(blend.z), smoothness) * scalar;
 
             double height = (blend.x * x) + (blend.y * y) + (blend.z * z);
-
+            if (scaleByRadius)
+                height *= sphere.radius;
+            
             data.vertHeight += deformity * height;
+        }
+    }
+
+    [RequireConfigType(ConfigType.Node)]
+    public sealed class TiledHeightMap : ModLoader<PQSMod_TiledHeightMap>
+    {
+        [ParserTarget("map")]
+        public MapSOParserGreyScale<MapSO> Map
+        {
+            get => Mod.tiledMap;
+            set => Mod.tiledMap = value;
+        }
+
+        [ParserTarget("tiling")]
+        public NumericParser<float> Tiling
+        {
+            get => Mod.tiling;
+            set => Mod.tiling = value;
+        }
+
+        [ParserTarget("smoothness")]
+        public NumericParser<float> Smoothness
+        {
+            get => Mod.smoothness;
+            set => Mod.smoothness = value;
+        }
+
+        [ParserTarget("balance")]
+        public NumericParser<float> Balance
+        {
+            get => Mod.deformationBalance;
+            set => Mod.deformationBalance = Mathf.Clamp01(value);
+        }
+
+        [ParserTarget("deformity")]
+        public NumericParser<float> Deformity
+        {
+            get => Mod.deformity;
+            set => Mod.deformity = value;
+        }
+
+        [ParserTarget("scaleByRadius")]
+        public NumericParser<bool> ScaleByRadius
+        {
+            get => Mod.scaleByRadius;
+            set => Mod.scaleByRadius = value;
         }
     }
 }
