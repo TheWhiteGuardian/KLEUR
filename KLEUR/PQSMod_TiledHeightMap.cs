@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using System;
-using Kopernicus;
-using Kopernicus.Configuration;
 using Kopernicus.Configuration.ModLoader;
 using Kopernicus.ConfigParser.Attributes;
 using Kopernicus.ConfigParser.Enumerations;
